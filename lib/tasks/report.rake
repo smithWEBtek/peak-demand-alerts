@@ -13,9 +13,13 @@ namespace :report do
     # https://webservices.iso-ne.com/api/v1.1/morningreport/current.json
     # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
     # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
-
+    url = "https://webservices.iso-ne.com/api/v1.1/morningreport/current"
     response = JSON.parse RestClient::Request.execute method: :get, url: url, user: 'mgardner@mapc.org', password: 'Foth7880'
     response["MorningReports"]["MorningReport"]
+
+    report = Report.create!
+
+    # report.forecasts.
 
   end
 end
