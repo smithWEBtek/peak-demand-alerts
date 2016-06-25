@@ -3,22 +3,16 @@ class Report < ActiveRecord::Base
 
   after_save :scrape
 
-  def scrape
-    # https://webservices.iso-ne.com/api/v1.1/morningreport/current
-    # https://webservices.iso-ne.com/api/v1.1/hourlyloadforecast/day/20160622.json
-    # https://webservices.iso-ne.com/api/v1.1/hourlyloadforecast/day/20160622.json
-    # https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json
-    # https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json
-    # https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json
-    # https://webservices.iso-ne.com/api/v1.1/morningreport/current.json
-    # https://webservices.iso-ne.com/api/v1.1/morningreport/current.json
-    # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
-    # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
+  scope :today, -> { where(:created_at => (Time.now.beginning_of_day..Time.now.end_of_day)) }
+  scope :latest, -> { order("created_at").last }
 
-    ### High Temperature
-    # url = "https://webservices.iso-ne.com/api/v1.1/morningreport/current.json"
-    # response = JSON.parse(RestClient::Request.execute( method: :get, url: url, user: 'mgardner@mapc.org', password: 'Foth7880'))
-    # response["MorningReports"]["MorningReport"].first["CityForecastDetail"].find {|i| i["CityName"] == "Boston" }
+  def actual_forecast
+    forecasts.where(projection: false).first
+  end
+  
+  def scrape
+    # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
+    # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
     forecast = self.forecasts.create( projection: false, 
                                       high_temp: morning_report["CityForecastDetail"].find {|i| i["CityName"] == "Boston" }["HighTemperature"],
                                       peak_hour: Time.parse(peak_load["BeginDate"]).hour,

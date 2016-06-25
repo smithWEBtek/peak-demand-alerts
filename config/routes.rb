@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
   namespace :admin do
     resources :configs
-resources :forecasts
-resources :reports
+    resources :forecasts
+    resources :reports
 
     root to: "configs#index"
   end
 
+  root to: "welcome#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
