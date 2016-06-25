@@ -1,7 +1,7 @@
 class Report < ActiveRecord::Base
 	has_many :forecasts
 
-  # before_save :scrape
+  after_save :scrape
 
   def scrape
     # https://webservices.iso-ne.com/api/v1.1/morningreport/current
