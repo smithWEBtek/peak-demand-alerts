@@ -1,24 +1,18 @@
 class Report < ActiveRecord::Base
 	has_many :forecasts
 
-  # before_save :scrape
+  after_save :scrape
 
+  scope :today, -> { where(:created_at => (Time.now.beginning_of_day..Time.now.end_of_day)) }
+  scope :latest, -> { order("created_at").last }
+
+  def actual_forecast
+    forecasts.where(projection: false).first
+  end
+  
   def scrape
-    # https://webservices.iso-ne.com/api/v1.1/morningreport/current
-    # https://webservices.iso-ne.com/api/v1.1/hourlyloadforecast/day/20160622.json
-    # https://webservices.iso-ne.com/api/v1.1/hourlyloadforecast/day/20160622.json
-    # https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json
-    # https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json
-    # https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json
-    # https://webservices.iso-ne.com/api/v1.1/morningreport/current.json
-    # https://webservices.iso-ne.com/api/v1.1/morningreport/current.json
     # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
     # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
-
-    ### High Temperature
-    # url = "https://webservices.iso-ne.com/api/v1.1/morningreport/current.json"
-    # response = JSON.parse(RestClient::Request.execute( method: :get, url: url, user: 'mgardner@mapc.org', password: 'Foth7880'))
-    # response["MorningReports"]["MorningReport"].first["CityForecastDetail"].find {|i| i["CityName"] == "Boston" }
     forecast = self.forecasts.create( projection: false, 
                                       high_temp: morning_report["CityForecastDetail"].find {|i| i["CityName"] == "Boston" }["HighTemperature"],
                                       peak_hour: Time.parse(peak_load["BeginDate"]).hour,
@@ -26,6 +20,15 @@ class Report < ActiveRecord::Base
                                       actual_peak_hour: Time.parse(morning_report["PeakLoadYesterdayHour"]).hour,
                                       actual_peak_load: morning_report["PeakLoadYesterdayMw"],
                                       date: Date.current)
+
+    seven_day_forecast.first["MarketDay"].each do |day|
+      self.forecasts.create(projection: true,
+        high_temp: day["HighTemp"],
+        peak_load: day["PeakLoadMw"],
+        date: Date.parse(day["MarketDate"])
+        )
+    end
+
   end
 
   def peak_load 
@@ -43,7 +46,7 @@ class Report < ActiveRecord::Base
     request_json(url)["HourlyLoadForecasts"]["HourlyLoadForecast"]
   end
 
-  def seven_day_forcast
+  def seven_day_forecast
     url = "https://webservices.iso-ne.com/api/v1.1/sevendayforecast/current.json"
     request_json(url)["SevenDayForecasts"]["SevenDayForecast"]
   end
