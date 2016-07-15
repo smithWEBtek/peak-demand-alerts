@@ -15,15 +15,16 @@ class Report < ActiveRecord::Base
     # https://www.wunderground.com/weather/api/d/docs?d=data/conditions
     forecast = self.forecasts.create( projection: false, 
                                       high_temp: morning_report["CityForecastDetail"].find {|i| i["CityName"] == "Boston" }["HighTemperature"],
-                                      peak_hour: Time.parse(peak_load["BeginDate"]).hour,
-                                      peak_load: peak_load["LoadMw"],
+                                      peak_hour: DateTime.parse(peak_load["BeginDate"]),
+                                      peak_load: peak_load["LoadMw"].to_i,
                                       actual_peak_hour: Time.parse(morning_report["PeakLoadYesterdayHour"]).hour,
                                       actual_peak_load: morning_report["PeakLoadYesterdayMw"],
                                       date: Date.current)
 
     seven_day_forecast.first["MarketDay"].each do |day|
+      high_temp = day["Weather"]["CityWeather"].select{ |hash| hash["CityName"] == "Boston" }[0]["HighTempF"]
       self.forecasts.create(projection: true,
-        high_temp: day["HighTemp"],
+        high_temp: high_temp,
         peak_load: day["PeakLoadMw"],
         date: Date.parse(day["MarketDate"])
         )

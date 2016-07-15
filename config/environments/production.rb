@@ -13,7 +13,7 @@ Rails.application.configure do
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
-
+  config.action_mailer.raise_delivery_errors = true
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
   # For large-scale production use, consider using a caching reverse proxy like
@@ -76,4 +76,14 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  Rails.application.default_url_options[:host] = ENV['DEFAULT_HOST']
+
+  config.action_mailer.delivery_method = :mailgun
+  config.action_mailer.mailgun_settings = {
+    api_key:        ENV['MAILGUN_API_KEY'],
+    domain:         ENV['MAILGUN_DOMAIN']
+  }
+
+  config.action_mailer.default_url_options = { host: ENV['DEFAULT_HOST'] }
 end
