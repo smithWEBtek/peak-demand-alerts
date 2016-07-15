@@ -7,6 +7,6 @@ class ReportMailer < ApplicationMailer
   #
   def daily(report)
     @report = report
-    mail to: "mgardner@mapc.org", from: "peakdemand@mapc.org", subject: "Peak Load Update"
+    mail to: "mgardner@mapc.org, proche@mapc.org", from: "peakdemand@mapc.org", subject: "Peak Load Update"
   end
 end
