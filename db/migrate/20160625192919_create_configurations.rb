@@ -1,6 +1,6 @@
-class CreateConfigs < ActiveRecord::Migration
+class CreateConfigurations < ActiveRecord::Migration
   def change
-    create_table :configs do |t|
+    create_table :configurations do |t|
     	t.integer :possible_min
     	t.integer :possible_max
 
