@@ -1,4 +1,4 @@
-class Config < ActiveRecord::Base
+class Configuration < ActiveRecord::Base
 
   def self.latest
     order(created_at: :asc).last
