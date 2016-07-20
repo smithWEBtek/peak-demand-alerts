@@ -10,11 +10,15 @@ class Forecast < ActiveRecord::Base
 	enumerize :risk, in: [:unlikely, :possible, :likely, :unknown],
     default: :unknown
 
+  def today?
+    Time.current.beginning_of_day == date.beginning_of_day
+  end
+
   def possible
-    @range ||= Config.latest.possible_range
+    @range ||= Configuration.latest.possible_range
   rescue NoMethodError => e
     Rails.logger.error "No config found, falling back to null. \n #{e.message}"
-    @range = Config.null
+    @range = Configuration.null
   end
 
   def risk_level
