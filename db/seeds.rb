@@ -6,4 +6,11 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Config.create(possible_min: 22500, possible_max: 23500)
+Configuration.create! possible_min: 22500, possible_max: 23500
+
+begin
+  Report.create!
+rescue KeyError => e
+  puts "e.message"
+  puts "Please ensure your environment vars contain ISO_USER and ISO_PASS."
+end

@@ -1,29 +1,38 @@
 class Forecast < ActiveRecord::Base
 
-	extend Enumerize 
+	extend Enumerize
+
   before_save :set_risk_category
 	belongs_to :report
 
 	validates :peak_load, presence: true
 
-	enumerize :risk, in: [:unlikely, :possible, :likely, :unknown], default: :unknown
+	enumerize :risk, in: [:unlikely, :possible, :likely, :unknown],
+    default: :unknown
 
-  def set_risk_category
-    # Always retrieve the latest configuration
-    config = Config.order("created_at ASC").last
+  def today?
+    Time.current.beginning_of_day == date.beginning_of_day
+  end
 
-    min = config.possible_min
-    max = config.possible_max
+  def possible
+    @range ||= Configuration.latest.possible_range
+  rescue NoMethodError => e
+    Rails.logger.error "No config found, falling back to null. \n #{e.message}"
+    @range = Configuration.null
+  end
 
-    likely = Range.new(min, max)
+  def peak_hour_range
+    start  = (peak_hour - 1.hour).strftime("%l")
+    finish = peak_hour.strftime("%l %p")
+    [start, finish].join(" - ")
+  end
 
-    result = case
-       when likely.include?(peak_load) then "possible"
-       when peak_load < likely.min then "unlikely"
-       when peak_load > likely.min then "likely"
+  def risk_level
+    case
+    when possible.include?(peak_load) then "possible"
+    when peak_load < possible.min     then "unlikely"
+    when peak_load > possible.max     then "likely"
     end
-
-    self.risk = result
   end
 
   def self.to_csv
@@ -34,4 +43,11 @@ class Forecast < ActiveRecord::Base
       end
     end
   end
+
+  private
+
+  def set_risk_category
+    self.risk = risk_level
+  end
+
 end

@@ -7,6 +7,10 @@ class ReportMailer < ApplicationMailer
   #
   def daily(report)
     @report = report
-    mail to: "mgardner@mapc.org, proche@mapc.org, nduffy@mapc.org", from: "peakdemand@mapc.org", subject: "Peak Load Update"
+    @config = ::Configuration.latest
+    # TODO: Add recipients, email setting to admin
+    mail to:      ENV.fetch('EMAIL_RECIPIENTS'),
+         from:    ENV.fetch('EMAIL_FROM'),
+         subject: "Peak Load Update"
   end
 end

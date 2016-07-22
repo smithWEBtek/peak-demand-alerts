@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
   namespace :admin do
-    resources :configs
+    resources :configurations
     resources :forecasts
     resources :reports
 
-    root to: "configs#index"
+    root to: "configurations#index"
   end
 
   root to: "welcome#index"
