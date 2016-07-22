@@ -21,6 +21,12 @@ class Forecast < ActiveRecord::Base
     @range = Configuration.null
   end
 
+  def peak_hour_range
+    start  = (peak_hour - 1.hour).strftime("%l")
+    finish = peak_hour.strftime("%l %p")
+    [start, finish].join(" - ")
+  end
+
   def risk_level
     case
     when possible.include?(peak_load) then "possible"
