@@ -1,9 +1,10 @@
 class Report < ActiveRecord::Base
 
-  has_many :forecasts, -> { order(created_at: :asc) }
-
   after_save :scrape
 
+  has_many :forecasts, -> { order(created_at: :asc) }
+
+  default_scope { includes(:forecasts) }
   scope :today, -> {
     where(created_at: (Time.current.beginning_of_day..Time.current.end_of_day))
   }
