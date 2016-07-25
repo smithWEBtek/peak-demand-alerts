@@ -75,7 +75,8 @@ class Report < ActiveRecord::Base
     {
       method:   :get,
       user:     ENV.fetch('ISO_USER'),
-      password: ENV.fetch('ISO_PASS')
+      password: ENV.fetch('ISO_PASS'),
+      verify_ssl: OpenSSL::SSL::VERIFY_NONE
     }
   end
 end
