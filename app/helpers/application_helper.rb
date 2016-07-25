@@ -2,22 +2,24 @@ module ApplicationHelper
 
   def cell_style(f)
     str = "background-color: #{risk_background(f)}; color: #{risk_text_color(f)};"
-    str << "border: 4px solid red;" if f.risk_level == 'likely'
+    # str << "border: 4px solid red;" if f.risk_level == 'likely'
     str << "text-align: center;" if f.today?
     str
   end
 
+  # FIXME: Too long.
   def risk_level_style(f)
-    """
-      background-color: #{risk_box_background(f)};
-      color: #{risk_box_text_color(f)};
-      border: #{header_border_size(f)} solid #{risk_color(f)};
-      text-align: center;
-    """
+    str = "background-color: #{risk_box_background(f)};"
+    str << "color: #{risk_box_text_color(f)};"
+    unless f.risk_level == 'likely'
+      str << "border: #{header_border_size(f)} solid #{risk_color(f)};"
+    end
+    str << "text-align: center;"
+    str
   end
 
   def header_style(f)
-    str = "color: #{header_text_color(f)};"
+    str = "color: #{risk_text_color(f)};"
     str << "border-top: #{header_border_size(f)} solid #{risk_color(f)};"
     str << "background-color: #{risk_background(f)};"
     str << "font-weight: #{ header_font_weight(f) };"
@@ -46,7 +48,7 @@ module ApplicationHelper
   end
 
   def risk_text_color(f)
-    'white' if f.risk_level == 'likely'
+    f.risk_level == 'likely' ? '#FFF' : '#000'
   end
 
   def risk_box_text_color(f)
@@ -59,10 +61,6 @@ module ApplicationHelper
     when 'possible' then 'orange'
     when 'unlikely' then 'green'
     end
-  end
-
-  def header_text_color(f)
-    f.risk_level == 'likely' ? 'white' : '#777'
   end
 
 end
