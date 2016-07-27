@@ -37,15 +37,15 @@
         - @report.forecasts.each do |f|
           %td{style: cell_style(f)}
             - if f.today?
-              %nobr
-                Peak load
-            %nobr
-              = (f.peak_load.to_f / 1000).round(1)
-              GW
+              Peak load
+              %br
+            = (f.peak_load.to_f / 1000).round(1)
+            GW
+            %br
             - if f.today?
-              %nobr
-                at
-                = f.peak_hour_range
+              at
+              = f.peak_hour_range
+              %br
       %tr
         - @report.forecasts.each do |f|
           %td{style: risk_level_style(f)}
