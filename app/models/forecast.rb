@@ -22,8 +22,9 @@ class Forecast < ActiveRecord::Base
   end
 
   def peak_hour_range
-    start  = (peak_hour - 1.hour).strftime("%l")
-    finish = peak_hour.strftime("%l %p")
+    start = peak_hour.strftime("%l %p")
+    finish  = (peak_hour + 1.hour).strftime("%l")
+    
     [start, finish].join(" - ")
   end
 
