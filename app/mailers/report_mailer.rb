@@ -11,6 +11,6 @@ class ReportMailer < ApplicationMailer
     # TODO: Add recipients, email setting to admin
     mail to:      ENV.fetch('EMAIL_RECIPIENTS'),
          from:    ENV.fetch('EMAIL_FROM'),
-         subject: "Peak Load Update - #{Time.now.strftime('%-d/%-m')}"
+         subject: "Peak Load Update - #{Time.now.strftime('%-m/%-d')}"
   end
 end
