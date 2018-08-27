@@ -1,5 +1,5 @@
 class ReportMailer < ApplicationMailer
-
+  add_template_helper(EmailHelper)
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #
