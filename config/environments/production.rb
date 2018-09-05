@@ -86,4 +86,5 @@ Rails.application.configure do
   }
 
   config.action_mailer.default_url_options = { host: ENV['DEFAULT_HOST'] }
+  config.action_mailer.asset_host = 'https://peak-alerts.herokuapp.com'
 end
