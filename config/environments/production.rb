@@ -85,6 +85,5 @@ Rails.application.configure do
     domain:         ENV['MAILGUN_DOMAIN']
   }
 
-  config.action_mailer.default_url_options = { host: ENV['DEFAULT_HOST'] }
-  config.action_mailer.asset_host = 'https://peak-alerts.herokuapp.com'
+  config.action_mailer.default_url_options = { host: ENV['DEFAULT_HOST'], protocol: 'https' }
 end
